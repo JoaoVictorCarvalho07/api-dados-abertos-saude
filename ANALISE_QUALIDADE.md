@@ -16,6 +16,22 @@ feito sobre uma amostra de 100 linhas do arquivo oficial.
 | Notificadas no PR | 647.663 |
 | Residentes do PR | 647.802 (1.492 notificados em outro estado) |
 
+## Temas possíveis
+
+Três recortes para a mesma base. Todos usam o arquivo acima; o que muda é a pergunta, as colunas que
+importam e, por consequência, quais problemas de qualidade pesam mais.
+
+| | 1. Curva da epidemia | 2. Dengue grave | 3. Atraso na notificação |
+|---|---|---|---|
+| **Problema** | Quando a epidemia de 2024 começou, chegou ao pico e terminou no PR? | Qual perfil de paciente evolui para dengue grave ou hospitalização? | Quanto tempo passa entre o início dos sintomas e a notificação? |
+| **Perguntas analíticas** | Em que semana os casos dispararam? As regionais de saúde tiveram o pico na mesma época? | A proporção de graves muda com a faixa etária? Diabetes e hipertensão aumentam a hospitalização? | O atraso cresceu no pico, com o sistema sobrecarregado? Há regionais mais lentas? |
+| **Colunas principais** | `DT_SIN_PRI`, `DT_NOTIFIC`, `ID_REGIONA`, `ID_MUNICIP` | `CLASSI_FIN`, `HOSPITALIZ`, `EVOLUCAO`, `NU_IDADE_N`, `DIABETES`, `HIPERTENSA` | `DT_SIN_PRI`, `DT_NOTIFIC`, `ID_REGIONA` |
+| **Qualidade que mais pesa** | Datas impossíveis ou fora de 2024; município vazio | Idade codificada; código `9` (ignorado); vazios em `HOSPITALIZ` e `EVOLUCAO` | Datas fora de ordem; atrasos negativos ou extremos (outliers) |
+| **Janela no RA2** | Sliding de 7 dias, deslizando 1 dia — **contagem** de casos (média móvel usada em alertas) | Tumbling de 1 dia — **contagem** de casos graves (pressão sobre hospitais) | Tumbling de 1 dia — **média** do atraso |
+| **Dificuldade** | Baixa | Média | Baixa |
+
+Os temas 1 e 3 usam as mesmas colunas de data, então a limpeza serve para os dois e dá para combiná-los.
+
 ## A amostra
 
 Gerada com `python gerar_amostra.py 100` → `dados/amostras/amostra_pr_100.csv`. O script espera o zip em `dados/brutos/DENGBR24.csv.zip`.
