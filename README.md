@@ -30,22 +30,33 @@ Using Pandas or any other data processing library of your choice:
 
 ---
 
-### Armazenamento dos dados preparados
+### RA1 — Ingestão e preparação (`ra1/`)
 
-O conjunto preparado no RA1 é salvo em **Parquet** (`dados/preparados/leitos_2025.parquet`), não em banco SQL.
+Fonte: `DENGBR26.csv.zip`, conjunto [Sinan/Dengue](https://dadosabertos.saude.gov.br/dataset/arboviroses-dengue) do Portal de Dados Abertos do SUS. Recorte: notificações de dengue de todo o Brasil em 2026 (470.451 linhas, 121 colunas, de 04/01 a 04/10/2026).
 
-- **Volume pequeno:** cerca de 86 mil linhas numa única tabela; o pandas lê em cerca de 1 s. Um banco não traz ganho de desempenho nem de organização.
-- **O RA2 lê arquivos:** o Spark Structured Streaming recebe registros novos por uma pasta de arquivos. Banco SQL não é fonte de streaming no Spark sem ferramentas extras, e o enunciado dispensa integrações adicionais.
-- **Tipos preservados:** `CNES` continua texto (com os zeros à esquerda) e `COMP` continua data, sem precisar definir esquema à mão como num banco ou perder tipos como num CSV.
-- **Reprodutibilidade:** quem clonar o repositório roda o notebook sem instalar ou configurar banco.
+| Script | Etapa do documento | Evidência gerada |
+|---|---|---|
+| `ra1/ingestao.py` | 02 — Fontes e ingestão | `ra1/saidas/01_ingestao.md` |
+| `ra1/qualidade.py` | 03 — Compreensão e qualidade | `ra1/saidas/02_diagnostico_qualidade.md` e `.csv` |
+| `ra1/limpeza.py` | 04 e 05 — Limpeza e conjunto resultante | `ra1/saidas/03_limpeza_e_resultado.md` e `dados/preparados/dengue_brasil_2026.parquet` |
 
-Um banco passaria a fazer sentido se o projeto juntasse vários anos ou várias tabelas (por exemplo, hospitais separados dos leitos mês a mês, ou cruzamento com população do IBGE), ou se uma etapa futura exigisse uma fonte consultada por várias pessoas ao mesmo tempo.
+Como reproduzir (Windows, Python 3.11), a partir da raiz do repositório:
 
-Para usar SQL sem banco, o [DuckDB](https://duckdb.org/) consulta o Parquet direto, útil nas verificações de qualidade:
-
-```python
-duckdb.sql("SELECT UF, COUNT(*) FROM 'dados/preparados/leitos_2025.parquet' GROUP BY UF")
+```bash
+py -3.11 -m venv .venv
+.venv/Scripts/python.exe -m pip install -r requirements.txt
+.venv/Scripts/python.exe ra1/ingestao.py
+.venv/Scripts/python.exe ra1/qualidade.py
+.venv/Scripts/python.exe ra1/limpeza.py
 ```
+
+Se `DENGBR26.csv.zip` não estiver na raiz, `ingestao.py` baixa da URL oficial. O `limpeza.py` só grava o Parquet se todas as validações passarem.
+
+O conjunto preparado é salvo em **Parquet**, não em banco SQL: o volume cabe no pandas, o Spark Structured Streaming do RA2 lê arquivos, o Parquet preserva os tipos (datas, categorias, códigos como texto) e ninguém precisa instalar banco para reproduzir.
+
+### RA2 — Streaming com janelas temporais (`ra2/`)
+
+A fazer.
 
 ---
 

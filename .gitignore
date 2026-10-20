@@ -1,2 +1,3 @@
-amostras
 dados/
+.venv/
+__pycache__/

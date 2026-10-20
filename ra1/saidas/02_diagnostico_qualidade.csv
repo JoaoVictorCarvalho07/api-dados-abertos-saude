@@ -1,0 +1,23 @@
+ID,Campo,Verificação e regra,Afetados,Unidade,% do total,Observação
+Q1,todas,Colunas 100% vazias,0,colunas,-,
+Q2,todas,Colunas com um único valor,3,colunas,-,"TP_NOT, ID_AGRAVO, NU_ANO"
+Q3,todas,Linhas duplicadas por completo,230,registros,0.05%,
+Q4,ID_MUNICIP+ID_UNIDADE+DT_NOTIFIC+DT_SIN_PRI+ANO_NASC+NU_IDADE_N+CS_SEXO+ID_MN_RESI,"Possíveis duplicatas: mesma pessoa, local e datas, mas linha não idêntica",2925,registros,0.62%,"Sem identificador de paciente, não é possível confirmar"
+Q5,DT_*,Datas que não seguem o formato AAAA-MM-DD,0,valores,-,
+Q6,DT_*,Registros com alguma data fora de 2025-12-01 a 2026-10-10,137,registros,0.03%,"DT_INTERNA: 84, DT_ALRM: 34, DT_INVEST: 6, DT_NS1: 4, DT_GRAV: 3, DT_VIRAL: 3, DT_SORO: 2, DT_PCR: 1, DT_ENCERRA: 1, DT_DIGITA: 1"
+Q7,"DT_SIN_PRI, DT_NOTIFIC",Início dos sintomas depois da notificação,0,registros,0.00%,
+Q8,"DT_DIGITA, DT_NOTIFIC",Digitação antes da notificação,7,registros,0.00%,
+Q9,"DT_ENCERRA, DT_NOTIFIC",Encerramento antes da notificação,55,registros,0.01%,
+Q10,"DT_SIN_PRI, DT_NOTIFIC",Atraso entre sintomas e notificação acima de 60 dias (outlier),2442,registros,0.52%,"mediana 3 dias, p99 38, máximo 238"
+Q11,CLASSI_FIN,Código fora do domínio do dicionário,4318,registros,0.92%,'0': 4318
+Q12,CLASSI_FIN,Sem classificação final (caso em investigação),30577,registros,6.50%,
+Q13,"CLASSI_FIN, SG_UF_NOT",Uso de '0' no lugar de vazio concentrado por UF,4318,registros,0.92%,1 UF(s) usam '0': ES (21.2% das notificações da UF)
+Q14,NU_IDADE_N,Idade vazia ou com unidade fora de 1 a 4,3,registros,0.00%,
+Q15,NU_IDADE_N,Idade acima de 120 anos,15,registros,0.00%,
+Q16,"NU_IDADE_N, ANO_NASC",Idade diverge do ano de nascimento em mais de 1 ano,1,registros,0.00%,
+Q17,CS_SEXO,"Sexo ignorado, vazio ou fora do domínio M/F",279,registros,0.06%,'I': 279
+Q18,"CS_SEXO, CS_GESTANT",Sexo masculino marcado como gestante,0,registros,0.00%,
+Q19,DIABETES,"Comorbidade sem informação útil (vazio, 9 = ignorado ou fora do domínio)",14941,registros,3.18%,"'<vazio>': 14937, '9': 4"
+Q20,HIPERTENSA,"Comorbidade sem informação útil (vazio, 9 = ignorado ou fora do domínio)",14942,registros,3.18%,"'<vazio>': 14937, '9': 5"
+Q21,"HOSPITALIZ, DT_INTERNA",Hospitalizado sem data de internação,2419,registros,0.51%,
+Q22,SG_UF,UF de residência vazia ou com código inexistente,0,registros,0.00%,
