@@ -1,8 +1,5 @@
 # RA1 — Resumo da entrega
 
-Commit `01e96a5` na branch `master` de
-[api-dados-abertos-saude](https://github.com/JoaoVictorCarvalho07/api-dados-abertos-saude).
-
 ## Recorte
 
 - Fonte: `DENGBR26.csv.zip`, conjunto [Sinan/Dengue](https://dadosabertos.saude.gov.br/dataset/arboviroses-dengue) do Portal de Dados Abertos do SUS.
