@@ -54,9 +54,42 @@ Se `DENGBR26.csv.zip` não estiver na raiz, `ingestao.py` baixa da URL oficial. 
 
 O conjunto preparado é salvo em **Parquet**, não em banco SQL: o volume cabe no pandas, o Spark Structured Streaming do RA2 lê arquivos, o Parquet preserva os tipos (datas, categorias, códigos como texto) e ninguém precisa instalar banco para reproduzir.
 
-### RA2 — Streaming com janelas temporais (`ra2/`)
+### RA2: Streaming com janelas temporais (`ra2/`)
 
-A fazer.
+Notebook: `ra2/ra2_dengue_2026.ipynb` (Cenário A, dados estáticos com chegada simulada).
+
+- Notificações dos dias 05 a 07/10/2026 são simuladas com o perfil (UF, região, classificação) de casos reais do conjunto preparado no RA1, com semente fixa.
+- Quatro lotes de JSON são publicados numa pasta monitorada pelo Spark Structured Streaming (`readStream`); o último lote é atrasado.
+- Janela **tumbling de 1 dia** sobre `dt_notificacao`, por região: contagem de notificações e soma de casos graves, com saída em memória no modo `complete`.
+- Ao final, o resultado do streaming é conferido contra o mesmo cálculo em lote.
+
+Pré-requisitos além do `requirements.txt`: **Java 17** e, no Windows, a variável `HADOOP_HOME` apontando para uma pasta com `bin/winutils.exe` e `bin/hadoop.dll` (o Spark precisa deles para gravar o checkpoint do streaming). Execute antes o notebook do RA1, que gera `dados/preparados/dengue_brasil_2026.parquet`.
+
+```bash
+.venv/Scripts/python.exe -m jupyter nbconvert --to notebook --execute --inplace ra2/ra2_dengue_2026.ipynb
+```
+
+**Demonstração ao vivo (dois terminais).** Os mesmos lotes do notebook podem ser publicados por um processo e consumidos por outro, como num fluxo real:
+
+| Arquivo | Papel |
+|---|---|
+| `ra2/config.py` | Pastas, lotes e semente compartilhados pelos dois processos |
+| `ra2/consumidor.py` | Spark Structured Streaming: monitora `dados/streaming/entrada`, aplica a janela e imprime a tabela a cada micro-batch |
+| `ra2/produtor.py` | Gera as notificações simuladas e publica um lote a cada N segundos |
+
+Terminal 1 (inicie primeiro; limpa `dados/streaming` e fica aguardando):
+
+```bash
+.venv/Scripts/python.exe ra2/consumidor.py
+```
+
+Terminal 2 (espera o consumidor ficar pronto e publica um lote a cada 10 s):
+
+```bash
+.venv/Scripts/python.exe ra2/produtor.py --intervalo 10
+```
+
+Cada lote vira um micro-batch no terminal 1. `Ctrl+C` encerra o consumidor.
 
 ---
 
