@@ -34,20 +34,29 @@ Using Pandas or any other data processing library of your choice:
 
 Fonte: `DENGBR26.csv.zip`, conjunto [Sinan/Dengue](https://dadosabertos.saude.gov.br/dataset/arboviroses-dengue) do Portal de Dados Abertos do SUS. Recorte: notificações de dengue de todo o Brasil em 2026 (470.451 linhas, 121 colunas, de 04/01 a 04/10/2026).
 
-| Script | Etapa do documento | Evidência gerada |
-|---|---|---|
-| `ra1/ingestao.py` | 02 — Fontes e ingestão | `ra1/saidas/01_ingestao.md` |
-| `ra1/qualidade.py` | 03 — Compreensão e qualidade | `ra1/saidas/02_diagnostico_qualidade.md` e `.csv` |
-| `ra1/limpeza.py` | 04 e 05 — Limpeza e conjunto resultante | `ra1/saidas/03_limpeza_e_resultado.md` e `dados/preparados/dengue_brasil_2026.parquet` |
+Implementa??o principal: notebook ?nico `ra1/ra1_dengue_2026.ipynb`, que faz ingest?o, diagn?stico de qualidade e limpeza e grava `dados/preparados/dengue_brasil_2026.parquet`.
 
-Como reproduzir (Windows, Python 3.11), a partir da raiz do repositório:
+Como reproduzir (Windows, Python 3.11), a partir da raiz do reposit?rio:
 
 ```bash
 py -3.11 -m venv .venv
 .venv/Scripts/python.exe -m pip install -r requirements.txt
-.venv/Scripts/python.exe ra1/ingestao.py
-.venv/Scripts/python.exe ra1/qualidade.py
-.venv/Scripts/python.exe ra1/limpeza.py
+.venv/Scripts/python.exe -m jupyter nbconvert --to notebook --execute --inplace ra1/ra1_dengue_2026.ipynb
+```
+
+Alternativa: as mesmas etapas separadas em scripts, em `ra1/py/`. Eles importam `ra1/config.py`, ent?o rode com `PYTHONPATH=ra1`:
+
+| Script | Etapa do documento | Evid?ncia gerada |
+|---|---|---|
+| `ra1/py/ingestao.py` | 02 ? Fontes e ingest?o | `ra1/saidas/01_ingestao.md` |
+| `ra1/py/qualidade.py` | 03 ? Compreens?o e qualidade | `ra1/saidas/02_diagnostico_qualidade.md` e `.csv` |
+| `ra1/py/limpeza.py` | 04 e 05 ? Limpeza e conjunto resultante | `ra1/saidas/03_limpeza_e_resultado.md` e `dados/preparados/dengue_brasil_2026.parquet` |
+
+```powershell
+$env:PYTHONPATH = "ra1"
+.venv/Scripts/python.exe ra1/py/ingestao.py
+.venv/Scripts/python.exe ra1/py/qualidade.py
+.venv/Scripts/python.exe ra1/py/limpeza.py
 ```
 
 Se `DENGBR26.csv.zip` não estiver na raiz, `ingestao.py` baixa da URL oficial. O `limpeza.py` só grava o Parquet se todas as validações passarem.
