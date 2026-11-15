@@ -44,22 +44,7 @@ py -3.11 -m venv .venv
 .venv/Scripts/python.exe -m jupyter nbconvert --to notebook --execute --inplace ra1/ra1_dengue_2026.ipynb
 ```
 
-As mesmas etapas também estão separadas em scripts, em `ra1/py/`. Eles importam `ra1/config.py`, então é preciso rodar com `PYTHONPATH=ra1`:
-
-| Script | Etapa do documento | Evidência gerada |
-|---|---|---|
-| `ra1/py/ingestao.py` | 02. Fontes e ingestão | `ra1/saidas/01_ingestao.md` |
-| `ra1/py/qualidade.py` | 03. Compreensão e qualidade | `ra1/saidas/02_diagnostico_qualidade.md` e `.csv` |
-| `ra1/py/limpeza.py` | 04 e 05. Limpeza e conjunto resultante | `ra1/saidas/03_limpeza_e_resultado.md` e `dados/preparados/dengue_brasil_2026.parquet` |
-
-```powershell
-$env:PYTHONPATH = "ra1"
-.venv/Scripts/python.exe ra1/py/ingestao.py
-.venv/Scripts/python.exe ra1/py/qualidade.py
-.venv/Scripts/python.exe ra1/py/limpeza.py
-```
-
-Se o `DENGBR26.csv.zip` não estiver na raiz, o `ingestao.py` baixa o arquivo da URL oficial. O `limpeza.py` só grava o Parquet se todas as validações passarem.
+Se o `DENGBR26.csv.zip` não estiver na raiz, o notebook baixa o arquivo da URL oficial.
 
 Salvamos o conjunto preparado em Parquet e não num banco SQL. O volume cabe no pandas, o Spark Structured Streaming do RA2 lê arquivos, o Parquet mantém os tipos (datas, categorias e códigos como texto) e ninguém precisa instalar um banco para reproduzir.
 
@@ -77,30 +62,6 @@ Além do `requirements.txt`, é preciso ter o **Java 17** e, no Windows, a vari�
 ```bash
 .venv/Scripts/python.exe -m jupyter nbconvert --to notebook --execute --inplace ra2/ra2_dengue_2026.ipynb
 ```
-
-**Demonstração ao vivo (dois terminais).** Os mesmos lotes do notebook podem ser publicados por um processo e consumidos por outro, como num fluxo real. Os scripts ficam em `ra2/py/` e importam `ra2/config.py`, por isso cada terminal precisa de `PYTHONPATH=ra2`.
-
-| Arquivo | Papel |
-|---|---|
-| `ra2/config.py` | Pastas, lotes e semente usados pelos dois processos |
-| `ra2/py/consumidor.py` | Usa o Spark Structured Streaming para monitorar `dados/streaming/entrada`, aplica a janela e imprime a tabela a cada micro-batch |
-| `ra2/py/produtor.py` | Gera as notificações simuladas e publica um lote a cada N segundos |
-
-No terminal 1, que deve ser iniciado primeiro, o consumidor limpa `dados/streaming` e fica esperando:
-
-```powershell
-$env:PYTHONPATH = "ra2"
-.venv/Scripts/python.exe ra2/py/consumidor.py
-```
-
-No terminal 2, o produtor espera o consumidor ficar pronto e publica um lote a cada 10 s:
-
-```powershell
-$env:PYTHONPATH = "ra2"
-.venv/Scripts/python.exe ra2/py/produtor.py --intervalo 10
-```
-
-Cada lote vira um micro-batch no terminal 1. `Ctrl+C` encerra o consumidor.
 
 ### RA3: Análise, visualização e Machine Learning (`ra3/`)
 
