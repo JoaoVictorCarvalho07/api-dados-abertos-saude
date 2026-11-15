@@ -78,24 +78,26 @@ Além do `requirements.txt`, é preciso ter o **Java 17** e, no Windows, a vari�
 .venv/Scripts/python.exe -m jupyter nbconvert --to notebook --execute --inplace ra2/ra2_dengue_2026.ipynb
 ```
 
-**Demonstração ao vivo (dois terminais).** Os mesmos lotes do notebook podem ser publicados por um processo e consumidos por outro, como num fluxo real.
+**Demonstração ao vivo (dois terminais).** Os mesmos lotes do notebook podem ser publicados por um processo e consumidos por outro, como num fluxo real. Os scripts ficam em `ra2/py/` e importam `ra2/config.py`, por isso cada terminal precisa de `PYTHONPATH=ra2`.
 
 | Arquivo | Papel |
 |---|---|
 | `ra2/config.py` | Pastas, lotes e semente usados pelos dois processos |
-| `ra2/consumidor.py` | Usa o Spark Structured Streaming para monitorar `dados/streaming/entrada`, aplica a janela e imprime a tabela a cada micro-batch |
-| `ra2/produtor.py` | Gera as notificações simuladas e publica um lote a cada N segundos |
+| `ra2/py/consumidor.py` | Usa o Spark Structured Streaming para monitorar `dados/streaming/entrada`, aplica a janela e imprime a tabela a cada micro-batch |
+| `ra2/py/produtor.py` | Gera as notificações simuladas e publica um lote a cada N segundos |
 
 No terminal 1, que deve ser iniciado primeiro, o consumidor limpa `dados/streaming` e fica esperando:
 
-```bash
-.venv/Scripts/python.exe ra2/consumidor.py
+```powershell
+$env:PYTHONPATH = "ra2"
+.venv/Scripts/python.exe ra2/py/consumidor.py
 ```
 
 No terminal 2, o produtor espera o consumidor ficar pronto e publica um lote a cada 10 s:
 
-```bash
-.venv/Scripts/python.exe ra2/produtor.py --intervalo 10
+```powershell
+$env:PYTHONPATH = "ra2"
+.venv/Scripts/python.exe ra2/py/produtor.py --intervalo 10
 ```
 
 Cada lote vira um micro-batch no terminal 1. `Ctrl+C` encerra o consumidor.
