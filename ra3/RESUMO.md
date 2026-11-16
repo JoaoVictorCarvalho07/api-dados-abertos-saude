@@ -1,8 +1,4 @@
-# RA3: resumo para estudar a apresentação
-
-Este texto é para o grupo se preparar para a apresentação de 18/11. Todos os números saem do notebook `ra3/ra3_dengue_2026.ipynb` já executado.
-
-## O que entregamos
+# RA3: Resumo Prático
 
 | Arquivo | O que é |
 |---|---|
@@ -15,7 +11,7 @@ O notebook lê o Parquet gerado no RA1 (`dados/preparados/dengue_brasil_2026.par
 
 ## 3.1 Estatística descritiva
 
-Resumimos duas variáveis numéricas, a idade e o atraso entre os sintomas e a notificação, e contamos as categorias de gravidade.
+Foi resumido duas variáveis numéricas, a idade e o atraso entre os sintomas e a notificação, e contamos as categorias de gravidade.
 
 | Medida | Idade (anos) | Atraso (dias) |
 |---|---|---|
@@ -34,7 +30,7 @@ Resumimos duas variáveis numéricas, a idade e o atraso entre os sintomas e a n
 - 8,6% das 346.623 notificações com o campo preenchido foram hospitalizadas. Em 26,3% das notificações esse campo está vazio.
 - A faixa etária com mais notificações é a de 15 a 29 anos (32,0%).
 
-## 3.2 Como ler cada gráfico
+## 3.2 Leitura dos Gráficos
 
 1. **Figura 1, linha por semana epidemiológica.** O eixo X é a semana do início dos sintomas e o eixo Y é o número de notificações. O pico é a SE 14, no começo de abril, com 20.520 notificações. Metade do ano está em 13 das 39 semanas. A queda na última semana (SE 39, com 3.440) vem do atraso de digitação, e por isso pintamos essa parte de cinza.
 2. **Figura 2, barras por UF.** À esquerda está o total e à direita a taxa por 100 mil habitantes. Goiás lidera nas duas (115.161 notificações e 1.632 por 100 mil, sete vezes a taxa do Brasil, que é 231,5). São Paulo é o 2º em total, mas na taxa fica abaixo da média (153,9). Por isso só faz sentido comparar estados de tamanhos diferentes pela taxa por habitante.
@@ -44,7 +40,7 @@ Resumimos duas variáveis numéricas, a idade e o atraso entre os sintomas e a n
 
 ## 3.3 Representatividade
 
-Não fizemos amostragem.
+Não foi realizado análise por amostragem.
 
 - Os dados vêm do Sinan, que é vigilância passiva. Só entra quem procurou atendimento e teve a ficha preenchida. Cada linha é uma notificação, e não uma pessoa nem um caso confirmado.
 - O arquivo cobre as 27 UFs, de 04/01 a 04/10/2026. Usamos todas as notificações, e o único sorteio é a divisão entre treino e teste do modelo.
@@ -54,7 +50,6 @@ Não fizemos amostragem.
   3. Há atraso no encerramento. As notificações sem classificação são 1,1% em junho, 35,5% em agosto, 65,9% em setembro e 86,2% em outubro.
   4. Muitos campos estão vazios. Faltam 26,3% na hospitalização e 28,6% na evolução, com variação de 19,0% (Centro-Oeste) a 46,2% (Sul).
   5. O arquivo público não traz nenhum caso descartado, e 14,9% estão como inconclusivos.
-  6. 5.797 linhas estão marcadas como possível duplicata.
 
 ## 3.4 O modelo explicado de forma simples
 
@@ -97,7 +92,7 @@ Não fizemos amostragem.
 - Usando só a ficha de notificação, o modelo encontra 2 de cada 3 internações, mas com muitos alarmes falsos.
 - As limitações principais são a subnotificação, os campos vazios que mudam muito entre regiões e os meses recentes ainda incompletos.
 
-## Perguntas que a professora pode fazer
+## Perguntas Pertinentes
 
 1. **Por que mediana e não média?** Idade e atraso têm assimetria à direita e a média é puxada pelos extremos. O atraso médio é de 4,5 dias e a mediana é 3. A mediana e o IQR não mudam muito com outliers.
 2. **Por que dividir pela população?** O total mistura o tamanho do estado com a intensidade da epidemia. São Paulo é o 2º em total, mas por habitante fica abaixo da média.
